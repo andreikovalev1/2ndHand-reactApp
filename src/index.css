@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'SF Compact Rounded';
+  src: url('./assets/fonts/SF-Compact-Rounded-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@theme {
+ --color-brand: #E55A63;
+ --font-logo: "SF Compact Rounded", ui-sans-serif, system-ui;
+}
