@@ -1,42 +1,196 @@
-import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../features/auth/auth-logic'
+import { Input } from '@/components/ui/input'
 import logoIcon from '../assets/name-label.svg'
+import heartIcon from '../assets/header-heart.svg'
+import cartIcon from '../assets/header-cart.svg'
+import userIcon from '../assets/header-profile.svg'
+import searchIcon from '../assets/search.svg'
+import { Menu, X, LogOut, User as UserIcon, Settings } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Header() {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const isAdmin = user?.role === 'admin'
 
+  const navLinks = isAdmin ? [
+    {label: 'Maintain Items', to: '/admin/items'},
+    {label: 'User Management', to: '/admin'},
+    {label: 'Reporting', to: '/admin/reporting'},
+  ] : [
+    {label: 'About us', to: '/'},
+    {label: 'All shops', to: '/'},
+    {label: 'Become merchant', to: '/'}
+  ]
+
+  const handleProtectedAction = (to: string) => {
+    if (!user) {
+        navigate({to: '/login'})
+    } else {
+        navigate({ to })
+    }
+  }
+
   return (
-    <header className={`p-4 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={logoIcon} alt="logo" className="w-10 h-10 object-contain" />
+    <header className={`relative p-4 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
+      <div className="container mx-auto flex justify-between items-center gap-4 lg:gap-8">
+        
+        <div className="flex items-center gap-8 flex-1 max-w-2xl">
+            <Link to="/" className="flex items-center gap-3 shrink-0">
+                <img src={logoIcon} alt="logo" className="w-10 h-10 object-contain" />
 
-          <div className="flex flex-col w-[56px] font-logo text-[14px] font-[900] leading-[0.93] uppercase text-white">
-            2nd hand market
+                <div className="hidden min-[400px]:flex flex-col w-[56px] font-logo text-[14px] font-[900] leading-[0.93] uppercase text-white">
+                    2nd hand market
+                </div>
+
+                {isAdmin && (
+                    <span className="self-center ml-2 border border-white/40 px-1 text-[10px] rounded uppercase">
+                    Admin
+                    </span>
+                )}
+            </Link>
+
+            {!isAdmin && (
+                <div className="relative hidden md:block w-[240px]">
+                <Input 
+                    className="bg-white/20 border-none rounded-full pl-9 h-8 text-sm placeholder:text-white/70 text-white focus-visible:ring-1 focus-visible:ring-white/50" 
+                    placeholder="Search..."
+                />
+                <img src={searchIcon} alt="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70" />
+                </div>
+            )}
+        </div>
+
+        <div className="flex items-center gap-6 lg:gap-10">
+          
+          <nav className="hidden lg:flex items-center gap-4 text-[13px] font-medium whitespace-nowrap">
+            {navLinks.map(link => (
+                <Link key={link.label} to={link.to} className="hover:opacity-80 transition-opacity">
+                    {link.label}
+                </Link>
+            ))}
+            {isAdmin && <Link to="/admin" className="font-semibold underline">Management</Link>}
+          </nav>
+
+          <div className="flex items-center gap-4">
+            
+            <button 
+              onClick={() => handleProtectedAction('/favorites')}
+              className="flex items-center -right-hover:scale-110 transition-transform cursor-pointer shrink-0"
+            >
+              <img src={heartIcon} alt="heart" className="w-5 h-5" />
+              <span className="text-white text-[10px] font-bold px-1.5">0</span>
+            </button>
+            
+            <button 
+              onClick={() => handleProtectedAction('/cart')}
+              className="flex items-center hover:scale-110 transition-transform cursor-pointer shrink-0"
+            >
+              <img src={cartIcon} alt="cart" className="w-5 h-5" />
+              <span className="text-white text-[10px] font-bold px-1.5">
+                3
+              </span>
+            </button>
+
+            {user ? (
+              <div className="ml-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center justify-center outline-none hover:scale-110 transition-transform cursor-pointer rounded-full focus:ring-2 focus:ring-white/50">
+                       <img 
+                          src={user.image || userIcon} 
+                          alt="user" 
+                          className="w-6 h-6 rounded-full border border-white/30" 
+                        />
+                    </button>
+                  </DropdownMenuTrigger>
+                  
+                  <DropdownMenuContent align="end" className="w-56 mt-2">
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.username}</p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    
+                    <DropdownMenuItem onClick={() => navigate({ to: '/' })} className="cursor-pointer"> /* изменить путь на profile */
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                    
+                    {!isAdmin && (
+                        <DropdownMenuItem onClick={() => navigate({ to: '/' })} className="cursor-pointer"> /* изменить путь на settings */
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                    )}
+                    
+                    <DropdownMenuSeparator />
+                    
+                    <DropdownMenuItem onClick={logout} className="text-red-600 focus:text-red-600 cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <Link to="/login" className="hover:scale-110 transition-transform cursor-pointer ml-2">
+                <img src={userIcon} alt="login" className="w-5 h-5" />
+              </Link>
+            )}
+
+            <button 
+                className="lg:hidden ml-2" 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
           </div>
-
-          {isAdmin && (
-            <span className="self-center ml-2 border border-white/40 px-1 text-[10px] rounded uppercase">
-              Admin
-            </span>
-          )}
-        </Link>
-
-        <nav className="flex gap-6 items-center">
-          <Link to="/" className="hover:opacity-80">Shop</Link>
-          {user ? (
-            <>
-              {isAdmin && <Link to="/admin" className="font-semibold underline">Management</Link>}
-              <button onClick={logout} className="bg-white text-black px-3 py-1 rounded text-sm cursor-pointer">
-                Exit ({user.firstName})
-              </button>
-            </>
-          ) : (
-            <Link to="/login" className="bg-white text-black px-4 py-1 rounded">Login</Link>
-          )}
-        </nav>
+        </div>
       </div>
+
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-inherit shadow-xl border-t border-white/10 p-4 flex flex-col gap-4 z-50 animate-in slide-in-from-top-2">
+            
+            {!isAdmin && (
+                <div className="relative w-full">
+                    <Input 
+                        className="bg-white/20 border-none rounded-lg pl-10 h-10 text-white placeholder:text-white/70" 
+                        placeholder="Search..."
+                    />
+                    <img src={searchIcon} alt="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70" />
+                </div>
+            )}
+
+            <nav className="flex flex-col gap-3">
+                {navLinks.map(link => (
+                    <Link 
+                        key={link.label} 
+                        to={link.to} 
+                        className="text-[16px] font-medium py-2 border-b border-white/10"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                        {link.label}
+                    </Link>
+                ))}
+            </nav>
+        </div>
+      )}
     </header>
   )
 }

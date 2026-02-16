@@ -1,9 +1,30 @@
 import { useState } from 'react'
 import { useAuth } from '../features/auth/auth-logic'
 import { useNavigate } from '@tanstack/react-router'
+import { cn } from "@/lib/utils"
 
-export function LoginForm() {
-  const { login,isLoading } = useAuth()
+// Импорты компонентов shadcn (убедись, что они установлены)
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  // 1. Твоя логика
+  const { login, isLoading } = useAuth()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -11,14 +32,12 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null) // Сбрасываем старую ошибку
+    setError(null)
     
     try {
       await login({ username, password })
-      // Если login прошел успешно, переходим:
       navigate({ to: '/' })
     } catch (err) {
-      // Если случилась ошибка (неверные данные), navigate не выполнится
       if (err instanceof Error) {
         setError(err.message)
       } else {
@@ -28,41 +47,55 @@ export function LoginForm() {
   }
 
   return (
-    <div className="max-w-md m-auto mt-20 p-10 border rounded-xl shadow-lg bg-white">
-      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">Login</h1>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm text-center">
-          {error}
-        </div>
-      )}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <input 
-          type="text" 
-          placeholder="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="p-2 border rounded focus:outline-brand transition-all"
-          required
-          disabled={isLoading}
-        />
-        <input 
-          type="password" 
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded focus:outline-brand transition-all"
-          required
-          disabled={isLoading}
-        />
-        <button 
-          type="submit" 
-          className="bg-brand text-white py-2 rounded font-semibold hover:opacity-90 transition-opacity cursor-pointer"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Signing In...' : 'Sign In'}
-        </button>
-      </form>
+    <div className={cn("flex flex-col items-center justify-center min-h-[80vh] px-4", className)} {...props}>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Login to your account</CardTitle>
+          <CardDescription>
+            Enter your credentials to access the market
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/50 text-destructive rounded-md text-sm text-center font-medium">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <FieldGroup className="flex flex-col gap-4">
+              <Field>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="username"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input 
+                  id="password" 
+                  type="password"
+                  autoComplete="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required 
+                  disabled={isLoading}
+                />
+              </Field>
+              <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </Button>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }
