@@ -42,8 +42,8 @@ export function Header() {
   }
 
   return (
-    <header className={`relative p-4 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
-      <div className="container mx-auto flex justify-between items-center gap-4 lg:gap-8">
+    <header className={`relative p-6 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
+      <div className="w-full flex justify-between items-center gap-4 lg:gap-8">
         
         <div className="flex items-center gap-8 flex-1 max-w-2xl">
             <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -165,7 +165,7 @@ export function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-inherit shadow-xl border-t border-white/10 p-4 flex flex-col gap-4 z-50 animate-in slide-in-from-top-2">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-inherit shadow-xl border-t border-white/10 p-4 flex flex-col gap-4 z-5 animate-in slide-in-from-top-2">
             
             {!isAdmin && (
                 <div className="relative w-full">

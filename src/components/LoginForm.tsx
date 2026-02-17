@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { useAuth } from '../features/auth/auth-logic'
 import { useNavigate } from '@tanstack/react-router'
 import { cn } from "@/lib/utils"
-
-// Импорты компонентов shadcn (убедись, что они установлены)
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -23,7 +21,6 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  // 1. Твоя логика
   const { login, isLoading } = useAuth()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
