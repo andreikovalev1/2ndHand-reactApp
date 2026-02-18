@@ -27,3 +27,8 @@ export interface Category {
   name: string;
   url: string;
 }
+
+export interface ShopSidebarProps {
+    onCategorySelect: (slug: string | null) => void;
+    selectedCategory: string | null;
+}
