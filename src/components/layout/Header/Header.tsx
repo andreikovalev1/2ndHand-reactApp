@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks/use-auth'
 import { Input } from '@/components/ui/input'
@@ -143,11 +143,30 @@ const HeaderActions = ({
 
 
 export function Header() {
+
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  
+
+  const headerRef = useRef<HTMLElement>(null)
+
   const isAdmin = user?.role === 'admin'
+
+  useEffect(() => {
+  if (!isMobileMenuOpen) return;
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      headerRef.current && 
+      !headerRef.current.contains(event.target as Node)
+    ) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [isMobileMenuOpen]);
 
   const navLinks: NavLink[] = isAdmin ? [
     {label: 'Maintain Items', to: '/admin/items'},
@@ -168,7 +187,7 @@ export function Header() {
   }
 
   return (
-    <header className={`relative p-6 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
+    <header ref={headerRef} className={`relative p-6 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
       <div className="w-full flex justify-between items-center gap-4 lg:gap-8">
         <div className="flex items-center gap-8 flex-1 max-w-2xl">
             <HeaderLogo isAdmin={isAdmin} />
