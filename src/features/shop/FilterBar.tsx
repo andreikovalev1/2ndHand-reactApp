@@ -14,7 +14,14 @@ const FILTER_OPTIONS: Record<string, string[]> = {
   Shop: ['ReStyle Hub', 'TrendTraders', 'Vintage Finders']
 }
 
-export function FilterBar() {
+export type SortOption = 'asc' | 'desc' | null;
+
+interface FilterBarProps {
+    currentSort: SortOption;
+    onSortChange: (sort: SortOption) => void;
+}
+
+export function FilterBar({ currentSort, onSortChange }: FilterBarProps) {
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({})
   const [isSaleActive, setIsSaleActive] = useState(false);
 
@@ -39,7 +46,11 @@ export function FilterBar() {
     })
   }
 
-  const clearAll = () => setSelectedFilters({})
+  const clearAll = () => {
+    setSelectedFilters({})
+    setIsSaleActive(false)
+    onSortChange(null)
+  }
 
   return (
     <div className="flex flex-col gap-4 mb-6">
@@ -72,8 +83,8 @@ export function FilterBar() {
         </button>
       </div>
 
-      {Object.keys(selectedFilters).length > 0 && (
-        <div className="flex flex-wrap gap-2 items-center animate-in fade-in slide-in-from-top-1">
+      {(Object.keys(selectedFilters).length > 0 || isSaleActive) && (
+        <div className="hidden md:flex flex-wrap gap-2 items-center ">
             {Object.entries(selectedFilters).map(([category, options]) => (
                 options.map(option => (
                     <Badge 
@@ -99,9 +110,29 @@ export function FilterBar() {
       )}
 
       <div className="flex items-center gap-2 text-xs text-[#333333] mt-2">
-         <span>Sort by:</span>
-         <button className="text-[#FF2D55] font-bold hover:underline">Ascending price</button>
-         <button className="hover:text-slate-800 hover:underline">Descending price</button>
+        <span>Sort by:</span>
+        <button 
+            className={cn(
+                "hover:underline transition-colors",
+                currentSort === 'asc' 
+                    ? "text-[#FF2D55] font-bold"
+                    : "text-slate-500 hover:text-slate-800"
+            )}
+            onClick={() => onSortChange('asc')}
+            >
+                Ascending price
+        </button>
+        <button 
+            className={cn(
+                "hover:underline transition-colors",
+                currentSort === 'desc' 
+                    ? "text-[#FF2D55] font-bold"
+                    : "text-slate-500 hover:text-slate-800"
+            )}
+            onClick={() => onSortChange('desc')}
+        >
+            Descending price
+        </button>
       </div>
     </div>
   )

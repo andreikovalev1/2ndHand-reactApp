@@ -3,11 +3,10 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../features/auth/auth-logic'
 import { Input } from '@/components/ui/input'
 import logoIcon from '../assets/name-label.svg'
-import heartIcon from '../assets/header-heart.svg'
 import cartIcon from '../assets/header-cart.svg'
 import userIcon from '../assets/header-profile.svg'
 import searchIcon from '../assets/search.svg'
-import { Menu, X, LogOut, User as UserIcon, Settings } from 'lucide-react'
+import { Menu, X, LogOut, User as UserIcon, Settings, Heart } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,9 +85,15 @@ export function Header() {
             
             <button 
               onClick={() => handleProtectedAction('/favorites')}
-              className="flex items-center -right-hover:scale-110 transition-transform cursor-pointer shrink-0"
+              className="group flex items-center -right-hover:scale-110 transition-transform cursor-pointer shrink-0"
             >
-              <img src={heartIcon} alt="heart" className="w-5 h-5" />
+              <Heart 
+                className="w-5 h-5 
+                  transition-all duration-300
+                  fill-black text-black opacity-20 
+                  group-hover:text-white group-hover:fill-transparent group-hover:opacity-100" 
+                strokeWidth={2}
+              />
               <span className="text-white text-[10px] font-bold px-1.5">0</span>
             </button>
             
@@ -168,7 +173,7 @@ export function Header() {
         <div className="lg:hidden absolute top-full left-0 w-full bg-inherit shadow-xl border-t border-white/10 p-4 flex flex-col gap-4 z-5 animate-in slide-in-from-top-2">
             
             {!isAdmin && (
-                <div className="relative w-full">
+                <div className="relative w-full md:hidden">
                     <Input 
                         className="bg-white/20 border-none rounded-lg pl-10 h-10 text-white placeholder:text-white/70" 
                         placeholder="Search..."

@@ -1,6 +1,7 @@
-import { Heart, ShoppingBag } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { type Product } from '@/api/products'
 import { cn } from '@/lib/utils'
+import cartIcon from '@/assets/header-cart.svg'
 
 interface ProductCardProps {
     product: Product
@@ -41,7 +42,7 @@ export function ProductCard ({ product }: ProductCardProps) {
             {product.title}
         </h3>
         
-        <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-end justify-between mt-auto">
             <div className="flex flex-col">
                  {product.originalPrice && (
                     <span className="text-xs text-slate-400 line-through">
@@ -53,8 +54,12 @@ export function ProductCard ({ product }: ProductCardProps) {
                  </span>
             </div>
 
-            <button className="p-2 bg-slate-100 hover:bg-brand hover:text-white rounded-full transition-colors group/cart">
-                <ShoppingBag className="w-4 h-4 text-slate-600 group-hover/cart:text-white" />
+            <button className="transition-transform cursor-pointer p-1">
+                <img 
+                    src={cartIcon} 
+                    alt="cart" 
+                    className="w-5 h-5 brightness-0 opacity-50 hover:opacity-100 transition-opacity" 
+                />
             </button>
         </div>
       </div>
