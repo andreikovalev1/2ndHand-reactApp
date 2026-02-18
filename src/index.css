@@ -6,7 +6,7 @@
 
 @font-face {
   font-family: 'SF Compact Rounded';
-  src: url('./assets/fonts/SF-Compact-Rounded-Black.ttf') format('truetype');
+  src: url('./assets/fonts/SF-Compact-Rounded-Black.woff2') format('truetype');
   font-weight: 900;
   font-style: normal;
 }

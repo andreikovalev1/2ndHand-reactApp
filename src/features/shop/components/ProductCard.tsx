@@ -19,6 +19,8 @@ export function ProductCard ({ product }: ProductCardProps) {
                     className='w-full h-full object-cover'
                     src={product.thumbnail}
                     alt={product.title}
+                    loading='lazy'
+                    decoding='async'
                 />
 
                 <button className="absolute top-3 right-3 p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors">

@@ -180,7 +180,6 @@ function ShopPage () {
            </div>
         </div>
       </div>
-      
       <div className="flex-1 flex overflow-hidden w-full px-4 lg:px-0 lg:pl-[50px]">
         <aside className="hidden lg:block w-64 shrink-0 py-6 pr-8 overflow-y-auto h-full scrollbar-thin">
            <ShopSidebar onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory} />
