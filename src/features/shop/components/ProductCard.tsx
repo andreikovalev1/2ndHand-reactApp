@@ -1,4 +1,4 @@
-import { Heart } from 'lucide-react'
+import { Heart, Star } from 'lucide-react'
 import { type Product } from '@/features/shop/types'
 import { cn } from '@/lib/utils'
 import cartIcon from '@/assets/header-cart.svg'
@@ -39,6 +39,16 @@ export function ProductCard ({ product }: ProductCardProps) {
                     {product.title}
                 </h3>
                 
+                <div className="flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                    <span className="text-xs font-medium text-slate-600">
+                        {product.rating.toFixed(1)}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                        ({product.rating})
+                    </span>
+                </div>
+
                 <div className="flex items-end justify-between mt-auto">
                     <div className="flex flex-col">
                          {originalPrice && (

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks/use-auth'
+import { useShop } from '@/context/ShopContext'
 import { Input } from '@/components/ui/input'
 import { Menu, X, LogOut, User as UserIcon, Settings, Heart } from 'lucide-react'
 import {
@@ -38,15 +39,22 @@ const HeaderLogo = ({ isAdmin }: HeaderLogoProps) => (
   </Link>
 )
 
-const HeaderSearch = ({ className }: { className?: string }) => (
-  <div className={`relative ${className}`}>
-    <Input 
-      className="bg-white/20 border-none rounded-full pl-9 h-8 text-sm placeholder:text-white/70 text-white focus-visible:ring-1 focus-visible:ring-white/50" 
-      placeholder="Search..."
-    />
-    <img src={searchIcon} alt="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70" />
-  </div>
-)
+const HeaderSearch = ({ className }: { className?: string }) => {
+  const {searchQuery, setSearchQuery} = useShop()
+  return (
+    <div className={`relative ${className}`}>
+      <Input 
+        className="bg-white/20 border-none rounded-full pl-9 h-8 text-sm placeholder:text-white/70 text-white focus-visible:ring-1 focus-visible:ring-white/50" 
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      <img src={searchIcon} alt="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70" />
+    </div>
+  )
+}
+  
+
 
 const HeaderNav = ({ links, isAdmin }: HeaderNavProps) => (
   <nav className="hidden lg:flex items-center gap-4 text-[13px] font-medium whitespace-nowrap">
