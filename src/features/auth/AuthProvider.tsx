@@ -1,19 +1,21 @@
 import React, { useCallback, useState } from 'react';
-import { AuthContext, type User } from './auth-logic';
+import { type User } from './types';
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('auth_user');
     return saved ? JSON.parse(saved) : null;
   });
+  
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = useCallback (async (credentials: { username: string; password: string }) => {
+  const login = useCallback(async (credentials: { username: string; password: string }) => {
     setIsLoading(true);
-    try{
+    try {
       const response = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type' : 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
 
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const data = await response.json();
+      
       const userWithRole: User = {
         ...data,
         role: credentials.username.includes('admin') ? 'admin' : 'user'
@@ -30,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       localStorage.setItem('auth_user', JSON.stringify(userWithRole));
       setUser(userWithRole);
-    }  finally {
+    } finally {
       setIsLoading(false);
     }
   }, []);

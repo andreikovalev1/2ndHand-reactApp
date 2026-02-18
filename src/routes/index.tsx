@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
-import { ShopSidebar } from '@/features/shop/ShopSidebar'
-import { FilterBar, type SortOption } from '@/features/shop/FilterBar'
-import { MOCK_PRODUCTS } from '../api/products'
-import { ProductCard } from '@/features/shop/ProductCard'
+import { ShopSidebar } from '@/features/shop/components/ShopSidebar'
+import { FilterBar, type SortOption } from '@/features/shop/components/FilterBar'
+import { MOCK_PRODUCTS } from '@/api/products'
+import { ProductCard } from '@/features/shop/components/ProductCard'
 import { ChevronRight, Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { 

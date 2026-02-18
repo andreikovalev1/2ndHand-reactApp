@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../features/auth/auth-logic'
+import { useAuth } from '../hooks/use-auth'
 import { useNavigate } from '@tanstack/react-router'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
