@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root.lazy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FavCartRouteImport } from './routes/fav-cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -18,6 +19,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
+const FavCartRoute = FavCartRouteImport.update({
+  id: '/fav-cart',
+  path: '/fav-cart',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/fav-cart.lazy').then((d) => d.Route))
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/fav-cart': typeof FavCartRoute
   '/login': typeof LoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/fav-cart': typeof FavCartRoute
   '/login': typeof LoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/fav-cart': typeof FavCartRoute
   '/login': typeof LoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/login'
+  fullPaths: '/' | '/admin' | '/fav-cart' | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/login'
-  id: '__root__' | '/' | '/admin' | '/login'
+  to: '/' | '/admin' | '/fav-cart' | '/login'
+  id: '__root__' | '/' | '/admin' | '/fav-cart' | '/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  FavCartRoute: typeof FavCartRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fav-cart': {
+      id: '/fav-cart'
+      path: '/fav-cart'
+      fullPath: '/fav-cart'
+      preLoaderRoute: typeof FavCartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  FavCartRoute: FavCartRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport

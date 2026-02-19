@@ -1,4 +1,5 @@
-import { Heart, Star } from 'lucide-react'
+import { Heart, Star, Check } from 'lucide-react'
+import { useShop } from '@/context/ShopContext';
 import { type Product } from '@/features/shop/types'
 import { cn } from '@/lib/utils'
 import cartIcon from '@/assets/header-cart.svg'
@@ -8,6 +9,27 @@ interface ProductCardProps {
 }
 
 export function ProductCard ({ product }: ProductCardProps) {
+    const { toggleFavorite, addToCart, removeFromCart, checkInFavorites, checkInCart} = useShop();
+
+    const isFavorite = checkInFavorites(product.id);
+    const isInCart = checkInCart(product.id);
+
+    const handleHeartClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite(product);
+    };
+
+    const handleCartClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isInCart) {
+            removeFromCart(product.id);
+        } else {
+            addToCart(product);
+        }
+    };
+
     const originalPrice = product.discountPercentage 
         ? product.price / (1 - product.discountPercentage / 100) 
         : null;
@@ -23,8 +45,17 @@ export function ProductCard ({ product }: ProductCardProps) {
                     decoding='async'
                 />
 
-                <button className="absolute top-3 right-3 p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors">
-                    <Heart className="w-4 h-4 text-slate-400 hover:text-red-500 hover:fill-red-500 transition-colors" />
+                <button 
+                    className="absolute top-3 right-3 p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors"
+                    onClick={handleHeartClick}
+                    >
+                    <Heart className={cn(
+                            "w-4 h-4 transition-colors duration-300",
+                            isFavorite 
+                                ? "text-[#FF2D55] fill-[#FF2D55]" 
+                                : "text-slate-400 hover:text-[#FF2D55]"
+                            )}
+                    />
                 </button>
 
                 <div className="absolute bottom-3 left-3 flex gap-1 flex-wrap">
@@ -63,12 +94,22 @@ export function ProductCard ({ product }: ProductCardProps) {
                          </span>
                     </div>
 
-                    <button className="transition-transform cursor-pointer p-1">
-                        <img 
-                            src={cartIcon} 
-                            alt="cart" 
-                            className="w-5 h-5 brightness-0 opacity-50 hover:opacity-100 transition-opacity" 
-                        />
+                    <button 
+                        className={cn(
+                            "transition-all p-1.5 rounded-full",
+                            isInCart ? "bg-green-50 cursor-default" : "cursor-pointer hover:bg-slate-100"
+                        )}
+                        onClick={handleCartClick}
+                        >
+                        {isInCart ? (
+                            <Check className="w-5 h-5 text-green-600" />
+                        ) : (
+                            <img 
+                                src={cartIcon} 
+                                alt="cart" 
+                                className="w-5 h-5 brightness-0 opacity-50 hover:opacity-100 transition-opacity" 
+                            />
+                        )}
                     </button>
                 </div>
             </div>

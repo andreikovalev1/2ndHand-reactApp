@@ -75,6 +75,7 @@ const HeaderActions = ({
   isMobileMenuOpen 
 }: HeaderActionsProps) => {
   const navigate = useNavigate()
+  const { cart, favorites} = useShop();
 
   return (
     <div className="flex items-center gap-4">
@@ -86,7 +87,7 @@ const HeaderActions = ({
           className="w-5 h-5 transition-all duration-300 fill-black text-black opacity-20 group-hover:text-white group-hover:fill-transparent group-hover:opacity-100" 
           strokeWidth={2}
         />
-        <span className="text-white text-[10px] font-bold px-1.5">0</span>
+        <span className="text-white text-[10px] font-bold px-1.5">{favorites.length}</span>
       </button>
       
       <button 
@@ -94,7 +95,7 @@ const HeaderActions = ({
         className="flex items-center hover:scale-110 transition-transform cursor-pointer shrink-0"
       >
         <img src={cartIcon} alt="cart" className="w-5 h-5" />
-        <span className="text-white text-[10px] font-bold px-1.5">3</span>
+        <span className="text-white text-[10px] font-bold px-1.5">{cart.length}</span>
       </button>
 
       {user ? (
@@ -190,7 +191,13 @@ export function Header() {
     if (!user) {
         navigate({to: '/login'})
     } else {
-        navigate({ to })
+        if (to === '/cart') {
+            navigate({ to: '/fav-cart', search: { tab: 'cart' } })
+        } else if (to === '/favorites') {
+            navigate({ to: '/fav-cart', search: { tab: 'favorites' } })
+        } else {
+            navigate({ to })
+        }
     }
   }
 
