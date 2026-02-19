@@ -33,7 +33,6 @@ export function LoginForm({
     
     try {
       const user = await login({ username, password })
-      console.log("ЧТО ПРИШЛО ПОСЛЕ ЛОГИНА:", user)
       
       if(user.role === 'admin') {
         navigate({to: '/admin'})
@@ -41,7 +40,6 @@ export function LoginForm({
         navigate({to: '/'})
       }
     } catch (err) {
-      console.error("🚨 ПРОИЗОШЛА ОШИБКА ПРИ ЛОГИНЕ:", err)
       if (err instanceof Error) {
         setError(err.message)
       } else {

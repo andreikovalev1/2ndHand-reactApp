@@ -26,8 +26,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const loginData = await response.json();
       
-      // 2. Делаем ВТОРОЙ запрос за полным профилем юзера (по его ID)
-      // Именно здесь хранится поле "role"
       const profileResponse = await fetch(`https://dummyjson.com/users/${loginData.id}`);
       
       if (!profileResponse.ok) {
@@ -35,14 +33,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       const profileData = await profileResponse.json();
-
-      // 3. Соединяем токен авторизации и настоящую роль
       const userFromApi: User = {
-        ...loginData,           // берем id, username, token
-        role: profileData.role  // берем роль (admin или user) из полного профиля
+        ...loginData,
+        role: profileData.role 
       };
 
-      // Сохраняем в localStorage и стейт
       localStorage.setItem('auth_user', JSON.stringify(userFromApi));
       setUser(userFromApi);
 
