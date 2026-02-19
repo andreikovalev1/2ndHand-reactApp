@@ -71,7 +71,7 @@ export function LoginForm({
                 <Input
                   id="username"
                   type="text"
-                  placeholder="username"
+                  placeholder="Enter your username"
                   autoComplete="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -84,6 +84,7 @@ export function LoginForm({
                 <Input 
                   id="password" 
                   type="password"
+                  placeholder='Enter your password'
                   autoComplete="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
