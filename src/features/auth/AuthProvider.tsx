@@ -24,15 +24,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error(errorData.message || 'Login failed');
       }
 
-      const data = await response.json();
+      const loginData = await response.json();
       
-      const userWithRole: User = {
-        ...data,
-        role: credentials.username.includes('admin') ? 'admin' : 'user'
+      // 2. Делаем ВТОРОЙ запрос за полным профилем юзера (по его ID)
+      // Именно здесь хранится поле "role"
+      const profileResponse = await fetch(`https://dummyjson.com/users/${loginData.id}`);
+      
+      if (!profileResponse.ok) {
+        throw new Error('Failed to fetch user profile');
+      }
+      
+      const profileData = await profileResponse.json();
+
+      // 3. Соединяем токен авторизации и настоящую роль
+      const userFromApi: User = {
+        ...loginData,           // берем id, username, token
+        role: profileData.role  // берем роль (admin или user) из полного профиля
       };
 
-      localStorage.setItem('auth_user', JSON.stringify(userWithRole));
-      setUser(userWithRole);
+      // Сохраняем в localStorage и стейт
+      localStorage.setItem('auth_user', JSON.stringify(userFromApi));
+      setUser(userFromApi);
+
+      return userFromApi;
     } finally {
       setIsLoading(false);
     }

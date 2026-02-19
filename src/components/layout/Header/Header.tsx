@@ -19,23 +19,17 @@ import userIcon from '@/assets/header-profile.svg'
 import searchIcon from '@/assets/search.svg'
 
 import type { 
-  NavLink, 
-  HeaderLogoProps, 
+  NavLink,  
   HeaderNavProps, 
   HeaderActionsProps 
 } from './types'
 
-const HeaderLogo = ({ isAdmin }: HeaderLogoProps) => (
+const HeaderLogo = () => (
   <Link to="/" className="flex items-center gap-3 shrink-0">
     <img src={logoIcon} alt="logo" className="w-10 h-10 object-contain" />
     <div className="hidden min-[400px]:flex flex-col w-[56px] font-logo text-[14px] font-[900] leading-[0.93] uppercase text-white">
       2nd hand market
     </div>
-    {isAdmin && (
-      <span className="self-center ml-2 border border-white/40 px-1 text-[10px] rounded uppercase">
-        Admin
-      </span>
-    )}
   </Link>
 )
 
@@ -56,14 +50,13 @@ const HeaderSearch = ({ className }: { className?: string }) => {
   
 
 
-const HeaderNav = ({ links, isAdmin }: HeaderNavProps) => (
+const HeaderNav = ({ links }: HeaderNavProps) => (
   <nav className="hidden lg:flex items-center gap-4 text-[13px] font-medium whitespace-nowrap">
     {links.map(link => (
       <Link key={link.label} to={link.to} className="hover:opacity-80 transition-opacity">
         {link.label}
       </Link>
     ))}
-    {isAdmin && <Link to="/admin" className="font-semibold underline">Management</Link>}
   </nav>
 )
 
@@ -76,27 +69,33 @@ const HeaderActions = ({
 }: HeaderActionsProps) => {
   const navigate = useNavigate()
   const { cart, favorites} = useShop();
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div className="flex items-center gap-4">
-      <button 
+      {!isAdmin && (
+        <>
+        <button 
         onClick={() => onProtectedAction('/favorites')}
         className="group flex items-center hover:scale-110 transition-transform cursor-pointer shrink-0"
-      >
-        <Heart 
-          className="w-5 h-5 transition-all duration-300 fill-black text-black opacity-20 group-hover:text-white group-hover:fill-transparent group-hover:opacity-100" 
-          strokeWidth={2}
-        />
-        <span className="text-white text-[10px] font-bold px-1.5">{favorites.length}</span>
-      </button>
+        >
+          <Heart 
+            className="w-5 h-5 transition-all duration-300 fill-black text-black opacity-20 group-hover:text-white group-hover:fill-transparent group-hover:opacity-100" 
+            strokeWidth={2}
+          />
+          <span className="text-white text-[10px] font-bold px-1.5">{favorites.length}</span>
+        </button>
+        
+        <button 
+          onClick={() => onProtectedAction('/cart')}
+          className="flex items-center hover:scale-110 transition-transform cursor-pointer shrink-0"
+        >
+          <img src={cartIcon} alt="cart" className="w-5 h-5" />
+          <span className="text-white text-[10px] font-bold px-1.5">{cart.length}</span>
+        </button>
+      </>
+      )}
       
-      <button 
-        onClick={() => onProtectedAction('/cart')}
-        className="flex items-center hover:scale-110 transition-transform cursor-pointer shrink-0"
-      >
-        <img src={cartIcon} alt="cart" className="w-5 h-5" />
-        <span className="text-white text-[10px] font-bold px-1.5">{cart.length}</span>
-      </button>
 
       {user ? (
         <div className="ml-2">
@@ -130,7 +129,13 @@ const HeaderActions = ({
                   </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onLogout} className="text-red-600 focus:text-red-600 cursor-pointer">
+              <DropdownMenuItem 
+                onClick={() => {
+                  onLogout();
+                  navigate({to: '/'});
+                }} 
+                className="text-red-600 focus:text-red-600 cursor-pointer"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
@@ -202,10 +207,10 @@ export function Header() {
   }
 
   return (
-    <header ref={headerRef} className={`relative p-6 text-white shadow-md ${isAdmin ? 'bg-slate-900' : 'bg-brand'}`}>
+    <header ref={headerRef} className={`relative p-6 text-white shadow-md ${isAdmin ? 'bg-slate-600' : 'bg-brand'}`}>
       <div className="w-full flex justify-between items-center gap-4 lg:gap-8">
         <div className="flex items-center gap-8 flex-1 max-w-2xl">
-            <HeaderLogo isAdmin={isAdmin} />
+            <HeaderLogo />
             {!isAdmin && <HeaderSearch className="hidden md:block w-[240px]" />}
         </div>
 
