@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# 🛍️ 2nd Hand Market & Backoffice
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Современное веб-приложение для магазина подержанных вещей (2nd hand market), включающее в себя клиентскую часть (витрина, корзина, избранное) и защищенную панель администратора (Backoffice) для управления пользователями и товарами.
 
-Currently, two official plugins are available:
+## 🚀 Ссылки на деплой
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Production:** [https://2nd-handmarket.netlify.app/]
+- **Репозиторий:** [(https://github.com/andreikovalev1/2ndHand-reactApp)]
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 📋 Краткая функциональность
 
-## Expanding the ESLint configuration
+Проект разделен на две основные зоны с ролевой моделью доступа (Role-Based Access Control):
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Клиентская часть (Shop)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Публичный доступ к витрине магазина.
+- Поиск товаров.
+- Добавление товаров в корзину (Cart) и избранное (Favorites) с отображением счетчиков в шапке.
+- Меню и адаптивный Header.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 2. Панель администратора (Backoffice)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Защищенный роутинг (Guard):** Доступ к маршрутам `/admin/*` строго ограничен. Если обычный пользователь или неавторизованный гость попытается зайти по прямой ссылке, роутер автоматически перенаправит его на страницу логина.
+- **Авторизация:** Интеграция с [DummyJSON API](https://dummyjson.com/) для аутентификации. Роль пользователя (`admin` или `user`) проверяется через получение полного профиля по ID.
+- **Управление пользователями (User Management):** \* Комплексная форма добавления "Bringing Customers".
+  - Управление состоянием формы без лишних ререндеров.
+  - Интеграция масок ввода (например, для номера клиента `0000-0000-0000-0000`).
+  - Отправка реального `POST` запроса на создание пользователя и автоматическая очистка формы при успехе.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Список зависимостей (Tech Stack)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Проект построен на современном стеке технологий с использованием строгой типизации:
+
+- **Core:** React 18, TypeScript, Vite
+- **Routing:** `@tanstack/react-router` — строгий (Type-Safe) роутинг с поддержкой guards.
+- **Forms & Validation:** `react-hook-form` — производительная работа с формами.
+- **Masking:** `react-imask` — маскирование инпутов.
+- **Styling:** Tailwind CSS
+- **UI Components:** `shadcn/ui` (Radix UI) — доступные и кастомизируемые компоненты (Input, Button, DropdownMenu и др.).
+- **Icons:** `lucide-react`
+- **API Mocking:** DummyJSON API
+
+---
+
+## 💻 Инструкция по запуску
+
+Для локального запуска проекта на вашем компьютере выполните следующие шаги:
+
+### 1. Клонирование репозитория
+
+git clone [ссылка на твой репозиторий]
+cd [название папки проекта]
+
+### 2. Установка зависимостей
+
+Убедитесь, что у вас установлен Node.js. Затем выполните:
+npm install
+
+### 3. Запуск сервера для разработки
+
+npm run dev
+
+Приложение будет доступно по адресу: `http://localhost:5173`
+
+---
+
+## 🔐 Данные для тестирования (DummyJSON)
+
+Так как проект использует тестовое API, вы можете использовать следующие учетные данные для проверки ролевой системы:
+
+**Для доступа в Admin Panel (роль - admin):**
+
+- **Username:** `emilys`
+- **Password:** `emilyspass`
+
+**Для доступа как обычный покупатель (роль - user):**
+
+- **Username:** `averyp`
+- **Password:** `averyppass`
+
+_(Примечание: API DummyJSON имитирует создание пользователей, поэтому новые пользователи, созданные через админку, не сохраняются в базе данных навсегда)._
